@@ -1,0 +1,46 @@
+---
+title: "Project Plan"
+output: html_document
+---
+
+### Distribution: Exponential
+
+### Estimators 
+
+To include:
+
+- MLE
+- $\frac{n-1}{\sum x_i}$ (unbiased correction for MLE)
+- 2nd moment (since first is the same as the MLE)
+
+Analysis:
+
+- Comparison of moment estimators and their variation as sample size and the parameter value changes
+- Create table to show results for each estimator
+  - Variance
+  - Bias
+  - Asym unbiased 
+  - Consistency 
+  - Asym normally distributed
+  - etc
+- Calculate MSE for each, and plot these, as done in Lab 6 
+- If at anytime we see something we like, we can throw in a new estimator (could add in a bad one) think of small samples ($n = 100$ is pretty big, so try $n = 25$ or 50)
+- Think about the location of the mean, (is it scale invariant...does it matter 
+- Vary mean with constant sample sizes 
+
+### Confidence intervals 
+
+To include:
+
+- Wald 
+- Score test CI (comparing different $n$, $\alpha$, parameters)
+- LRT CI (comparing different $n$, $\alpha$, parameters)
+- Bootstrap CI
+
+Confidence interval analysis:
+
+- Plot average coverage probabilities for different $n$ (fixed $\alpha$)
+- Plot absolute errors of coverage for different $n$
+- Plot CI width for different $\theta$ (fixed $n$ and $\alpha$)
+- $\theta$, $1/\theta$, parameterizations
+- Think about reasonable metrics
