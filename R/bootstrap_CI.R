@@ -2,17 +2,18 @@ set.seed(123)
 
 # Generate original sample
 n <- 1000
-x <- rexp(n, rate = (1/12))
-x_bar <- mean(samp)
+lambda <- 1/12
+x <- rexp(n, rate = lambda)
+x_bar <- mean(x)
 
 # Number of bootstrap samples
-nb <- 10000
-# Boostraps
-boot_straps <- sample(x, n * nb, replace = TRUE) %>%
+nb <- 100000
+# Take boostrap samples
+bootstrap_samples <- sample(x, n * nb, replace = TRUE) %>%
   matrix(nrow = n, ncol = nb)
 
 # Get means of columns 
-means <- colMeans(boot_straps)
+means <- colMeans(bootstrap_samples)
 # Get deltas (x* - x)
 deltas <- means - x_bar
 deltas <- sort(deltas)
