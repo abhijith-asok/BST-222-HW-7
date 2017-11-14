@@ -63,7 +63,12 @@ wald_ci <- function(N, rate, alpha = 0.05){
 
 # Gamma Confidence Interval
 
-If $X_1, X_2,...,X_n \stackrel{\text{iid}}{\sim} \text{Exponential}(\lambda)$, then $\sum_i^n x_i \sim \text{Gamma}(n, \lambda) \implies \lambda \bar{x} \sim \text{Gamma}(n, n)$. Let $g_{y}$ be the $y$th percentile of this distribution. Then we can say:
+If $X_1, X_2,...,X_n \stackrel{\text{iid}}{\sim} \text{Exponential}(\lambda)$, then
+
+$$
+\sum_i^n x_i \sim \text{Gamma}(n, \lambda) \implies \lambda \bar{x} \sim \text{Gamma}(n, n)$$
+
+Let $g_{y}$ be the $y$th percentile of this distribution. Then we can say:
 
 $$
 1 - \alpha = P(g_{\alpha/2} \le \lambda \bar{x} \le g_{1-\alpha/2}) = P(g_{\alpha/2}/\bar{x} \le \lambda \bar{x} \le g_{1-\alpha/2}/\bar{x})
@@ -74,8 +79,7 @@ $$
 (g_{\alpha / 2}/\bar{x},\, g_{1 - \alpha / 2}/\bar{x})
 $$
 
-
-```{r, echo = TRUE}
+```{r, echo = FALSE}
 gamma_ci <- function(N, rate, alpha = 0.05){
   # Inspiration: https://math.stackexchange.com/questions/1288139/calculate-the-confidence-interval-of-parameter-of-exponential-distribution
   x <- rexp(N, rate = rate)
@@ -87,7 +91,7 @@ gamma_ci <- function(N, rate, alpha = 0.05){
 ```
 
 # Score Confidence Interval
-```{r, echo = TRUE}
+```{r, echo = FALSE}
 score_ci <- function(N, rate, alpha = 0.05) {
   x <- rexp(N, rate = rate)
   xbar <- mean(x)
@@ -99,7 +103,7 @@ score_ci <- function(N, rate, alpha = 0.05) {
 
 # Bootstrap Confidence Interval
 
-```{r, echo = TRUE}
+```{r, echo = FALSE}
 bootstrap_ci <- function(N, rate, alpha = 0.05){
   # Function to calculate bootstrap CI
   x <- rexp(N, rate = rate)
@@ -120,9 +124,9 @@ bootstrap_ci <- function(N, rate, alpha = 0.05){
 }
 ```
 
-# Other
+# Coverage probabilities
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
 library(dplyr)
 # Other functions
 coverage_probability <- function(N, rate, ci_fun, alpha = 0.05, B = 1000){
@@ -169,11 +173,13 @@ ns <- seq(1, 500)
 # If need to read:
 coverage_df <- read_csv("./data/coverage_probabilities.csv")
 
-ggplot(coverage_df, aes(x = n, y = bs)) +
-  geom_line(se = FALSE) +
-  geom_line(aes(x = n, y = gamma)) +
-  geom_line(aes(x = n, y = wald)) +
-  geom_line(aes(x = n, y = score))
+ggplot(coverage_df, aes(x = n, y = bs, color = "Bootstrap")) +
+  geom_line() +
+  geom_line(aes(x = n, y = gamma, color = "Gamma")) +
+  geom_line(aes(x = n, y = wald, color = "Wald")) +
+  geom_line(aes(x = n, y = score, color = "Score")) +
+  scale_y_continuous(name = "Coverage probability") +
+  scale_x_continuous(name = "N")
 ```
 
 # Summary of Findings and Recommendations
