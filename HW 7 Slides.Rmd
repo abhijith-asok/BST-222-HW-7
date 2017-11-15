@@ -97,7 +97,7 @@ $$
 \frac{U(\lambda_o)}{\sqrt{Var[U(\lambda_o)]}} \sim N(0,1)
 
 $$
-So the $1-\alpha$ score confidence interval can be obtained by solving 
+So the $1-\alpha$ score confidence interval for the mean can be obtained by solving 
 $$
 \frac{\frac{n}{\lambda_o}-\sum{x_i}}{\sqrt{n/\lambda^2_o}} 
 = \sqrt{n}(1-\lambda_o\overline{X}) \le z_{1-\alpha/2}
@@ -213,20 +213,21 @@ ggplot(coverage_df, aes(x = n, y = bs, color = "Bootstrap")) +
 ```{r}
 # need to split
 #wald_ci <- function(N, rate, alpha = 0.05){
-  x <- rexp(N, rate = rate)
-  x_bar <- mean(x)
-  se <- sd(x)/sqrt(N)
-  ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))*se
-  return(ci)
+ # x <- rexp(N, rate = rate)
+  #x_bar <- mean(x)
+  #se <- sd(x)/sqrt(N)
+  #ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))*se
+  #return(ci)
 #}
 #ggplot() + 
   #stat_function(aes(x = 0:1), fun = wald_ci, args = list(N=10, rate=x))
 
 # width
+set.seed(123)
 wald_ci_width <- function (N, rate, alpha = 0.05){
   x <- rexp(N, rate = rate)
   x_bar <- mean(x)
-  se <- sd(x)/sqrt(N)
+  se <- x_bar / sqrt(N)
   ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))*se
   width <- ci[2] - ci[1]
   return(width)
@@ -274,11 +275,12 @@ dat <- data.frame(lambda = rate,
                   score = score_width,
                   bootstrap = bootstrap_width
                   )
+dat <- abs(dat)
 ggplot(data = dat, aes(x = lambda)) + 
-  geom_line(aes(y = wald, color = "red")) +
-  geom_line(aes(y = gamma, color = "dodgerblue")) +
-  geom_line(aes(y = score, color = "yellow")) +
-  geom_line(aes(y = bootstrap, color = "green")) +
+  geom_line(aes(y = wald, color = "dodgerblue")) +
+  geom_line(aes(y = gamma, color = "burlywood")) +
+  geom_line(aes(y = score, color = "indianred1")) +
+  geom_line(aes(y = bootstrap, color = "seagreen")) +
   xlab("Lambda") +
   ylab("CI Width") +
   ggtitle("CI Widths when N=10") +
@@ -292,6 +294,7 @@ ggplot(data = dat, aes(x = lambda)) +
                               "Gamma",
                               "Score")) +
   theme_bw()
+
 
 ## add other n's
 ```
