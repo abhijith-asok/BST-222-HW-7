@@ -264,39 +264,61 @@ bootstrap_ci_width <- function(N, rate, alpha = 0.05){
   return(diff)
 }
 
+set.seed(123)
 rate <- seq(0.01, 0.5, 0.01)
-wald_width <- sapply(rate, FUN = wald_ci_width, N = 10)
-gamma_width <- sapply(rate, FUN = gamma_ci_width, N = 10)
-score_width <- sapply(rate, FUN = score_ci_width, N = 10)
-bootstrap_width <- sapply(rate, FUN = bootstrap_ci_width, N = 10)
+
+wald_width10 <- sapply(rate, FUN = wald_ci_width, N = 10)
+gamma_width10 <- sapply(rate, FUN = gamma_ci_width, N = 10)
+score_width10 <- sapply(rate, FUN = score_ci_width, N = 10)
+bootstrap_width10 <- sapply(rate, FUN = bootstrap_ci_width, N = 10)
+
+wald_width40 <- sapply(rate, FUN = wald_ci_width, N = 40)
+gamma_width40 <- sapply(rate, FUN = gamma_ci_width, N = 40)
+score_width40 <- sapply(rate, FUN = score_ci_width, N = 40)
+bootstrap_width40 <- sapply(rate, FUN = bootstrap_ci_width, N = 40)
+
 dat <- data.frame(lambda = rate, 
-                  wald = wald_width,
-                  gamma = gamma_width,
-                  score = score_width,
-                  bootstrap = bootstrap_width
+                  wald10 = wald_width10,
+                  gamma10 = gamma_width10,
+                  score10 = score_width10,
+                  bootstrap10 = bootstrap_width10,
+                  wald40 = wald_width40,
+                  gamma40 = gamma_width40,
+                  score40 = score_width40,
+                  bootstrap40 = bootstrap_width40
                   )
 dat <- abs(dat)
-ggplot(data = dat, aes(x = lambda)) + 
-  geom_line(aes(y = wald, color = "dodgerblue")) +
-  geom_line(aes(y = gamma, color = "burlywood")) +
-  geom_line(aes(y = score, color = "indianred1")) +
-  geom_line(aes(y = bootstrap, color = "seagreen")) +
+
+p <- ggplot(data = dat, aes(x = lambda)) +
   xlab("Lambda") +
   ylab("CI Width") +
-  ggtitle("CI Widths when N=10") +
   scale_color_manual("Test", 
                      values=c("dodgerblue",
-                              "seagreen",
-                              "burlywood", 
-                              "indianred1"),
+                              "burlywood",
+                              "indianred1",
+                              "seagreen"),
                      labels=c("Wald", 
-                              "Bootstrap",
                               "Gamma",
-                              "Score")) +
+                              "Score",
+                              "Bootstrap")) +
   theme_bw()
 
+p10 <- p +
+  geom_line(aes(y = wald10, color = "dodgerblue")) +
+  geom_line(aes(y = gamma10, color = "burlywood")) +
+  geom_line(aes(y = score10, color = "indianred1")) +
+  geom_line(aes(y = bootstrap10, color = "seagreen")) +
+  ggtitle("CI Widths when N=10")
 
-## add other n's
+p40 <- p +
+  geom_line(aes(y = wald40, color = "dodgerblue")) +
+  geom_line(aes(y = gamma40, color = "burlywood")) +
+  geom_line(aes(y = score40, color = "indianred1")) +
+  geom_line(aes(y = bootstrap40, color = "seagreen")) +
+  ggtitle("CI Widths when N=40")
+
+grid.arrange(p10, p40)
+
 ```
 
 # Summary of Findings and Recommendations
