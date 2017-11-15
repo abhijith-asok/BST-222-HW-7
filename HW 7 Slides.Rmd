@@ -56,7 +56,11 @@ wald_ci <- function(N, rate, alpha = 0.05){
   x <- rexp(N, rate = rate)
   x_bar <- mean(x)
   se <- sd(x)/sqrt(N)
+<<<<<<< HEAD
   ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))*se
+=======
+  ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))
+>>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
   return(ci)
 }
 ```
@@ -91,6 +95,7 @@ gamma_ci <- function(N, rate, alpha = 0.05){
 ```
 
 # Score Confidence Interval
+<<<<<<< HEAD
 For moderate to large sample sizes, the following score statistic is approximately normally distributed
 $$
 \frac{U(\lambda_o)}{\sqrt{Var[U(\lambda_o)]}} \sim N(0,1)
@@ -124,11 +129,33 @@ score_ci2 <- function(N, rate, alpha = 0.05) {
   xbar <- mean(x)
   return((1/rate)*(1 + c(-1, 1) * qnorm(1 - alpha / 2) / sqrt(N)))
 }
+=======
+```{r, echo = FALSE}
+score_ci <- function(N, rate, alpha = 0.05) {
+  x <- rexp(N, rate = rate)
+  xbar <- mean(x)
+  ci_lambda <- (1/xbar)*(1 + c(-1, 1) * qnorm(1 - alpha / 2) / sqrt(n))
+  ci_mean <- 1 / ci_lambda
+  return(c(ci_mean[2], ci_mean[1]))
+}
+>>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 ```
 
 # Bootstrap Confidence Interval
 
+<<<<<<< HEAD
 ```{r, echo = FALSE}
+=======
+- Empirical method which does not require knowledge of underlying distribution for $X$
+- Based on resampling data (with replacement) many times to create an empirical distribution $U^*$ which approximates the true (unknown) distribution $U$ 
+- We estimate the variation of $\bar{x}$ around the true mean $1/\lambda$ using the variation of $\bar{x}^*$ in bootstrapped samples
+- As an empirical method, depends on the original data
+  - We expect that $\bar{x}^*$ will approximate $\bar{x}$ well, but no guarantee it will be a good estimate of $1/\lambda$
+  - Not a problem when we use simulated data
+
+# Bootstrap Confidence Interval
+```{r}
+>>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 bootstrap_ci <- function(N, rate, alpha = 0.05){
   # Function to calculate bootstrap CI
   x <- rexp(N, rate = rate)
@@ -148,10 +175,16 @@ bootstrap_ci <- function(N, rate, alpha = 0.05){
   return(c(ci[2], ci[1]))
 }
 ```
+<<<<<<< HEAD
 
 # Coverage probabilities
 
 ```{r, echo = FALSE, message = FALSE}
+=======
+# Coverage probabilities
+
+```{r, echo = FALSE, message = FALSE, cache = TRUE}
+>>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 library(dplyr)
 # Other functions
 coverage_probability <- function(N, rate, ci_fun, alpha = 0.05, B = 1000){
@@ -207,6 +240,7 @@ ggplot(coverage_df, aes(x = n, y = bs, color = "Bootstrap")) +
   scale_x_continuous(name = "N")
 ```
 
+<<<<<<< HEAD
 # Plot CI Widths
 
 ```{r}
@@ -295,6 +329,8 @@ ggplot(data = dat, aes(x = lambda)) +
 ## add other n's
 ```
 
+=======
+>>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 # Summary of Findings and Recommendations
 
 ```{r cars, echo = TRUE}
