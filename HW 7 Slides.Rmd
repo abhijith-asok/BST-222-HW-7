@@ -103,7 +103,15 @@ score_ci <- function(N, rate, alpha = 0.05) {
 
 # Bootstrap Confidence Interval
 
-```{r, echo = FALSE}
+- Empirical method which does not require knowledge of underlying distribution for $X$
+- Based on resampling data (with replacement) many times to create an empirical distribution $U^*$ which approximates the true (unknown) distribution $U$ 
+- We estimate the variation of $\bar{x}$ around the true mean $1/\lambda$ using the variation of $\bar{x}^*$ in bootstrapped samples
+- As an empirical method, depends on the original data
+  - We expect that $\bar{x}^*$ will approximate $\bar{x}$ well, but no guarantee it will be a good estimate of $1/\lambda$
+  - Not a problem when we use simulated data
+
+# Bootstrap Confidence Interval
+```{r}
 bootstrap_ci <- function(N, rate, alpha = 0.05){
   # Function to calculate bootstrap CI
   x <- rexp(N, rate = rate)
@@ -123,10 +131,9 @@ bootstrap_ci <- function(N, rate, alpha = 0.05){
   return(c(ci[2], ci[1]))
 }
 ```
-
 # Coverage probabilities
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, message = FALSE, cache = TRUE}
 library(dplyr)
 # Other functions
 coverage_probability <- function(N, rate, ci_fun, alpha = 0.05, B = 1000){
