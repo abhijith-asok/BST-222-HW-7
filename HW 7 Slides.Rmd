@@ -55,12 +55,8 @@ We compared the following confidence intervals:
 wald_ci <- function(N, rate, alpha = 0.05){
   x <- rexp(N, rate = rate)
   x_bar <- mean(x)
-  se <- sd(x)/sqrt(N)
-<<<<<<< HEAD
+  se <- x_bar * sqrt(N)
   ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))*se
-=======
-  ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))
->>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
   return(ci)
 }
 ```
@@ -95,7 +91,7 @@ gamma_ci <- function(N, rate, alpha = 0.05){
 ```
 
 # Score Confidence Interval
-<<<<<<< HEAD
+
 For moderate to large sample sizes, the following score statistic is approximately normally distributed
 $$
 \frac{U(\lambda_o)}{\sqrt{Var[U(\lambda_o)]}} \sim N(0,1)
@@ -114,38 +110,17 @@ $$
 \end{align}
 $$
 ```{r, echo = FALSE}
-#liam
 score_ci <- function(N, rate, alpha = 0.05) {
-  x <- rexp(N, rate = rate)
-  xbar <- mean(x)
-  ci_lambda <- (1/xbar)*(1 + c(-1, 1) * qnorm(1 - alpha / 2) / sqrt(N))
-  ci_mean <- 1 / ci_lambda
-  return(c(ci_mean[2], ci_mean[1]))
-}
-
-#kat
-score_ci2 <- function(N, rate, alpha = 0.05) {
   x <- rexp(N, rate = rate)
   xbar <- mean(x)
   return((1/rate)*(1 + c(-1, 1) * qnorm(1 - alpha / 2) / sqrt(N)))
 }
-=======
-```{r, echo = FALSE}
-score_ci <- function(N, rate, alpha = 0.05) {
-  x <- rexp(N, rate = rate)
-  xbar <- mean(x)
-  ci_lambda <- (1/xbar)*(1 + c(-1, 1) * qnorm(1 - alpha / 2) / sqrt(n))
-  ci_mean <- 1 / ci_lambda
-  return(c(ci_mean[2], ci_mean[1]))
-}
->>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
+
+score_ci(100, lambda)
 ```
 
 # Bootstrap Confidence Interval
 
-<<<<<<< HEAD
-```{r, echo = FALSE}
-=======
 - Empirical method which does not require knowledge of underlying distribution for $X$
 - Based on resampling data (with replacement) many times to create an empirical distribution $U^*$ which approximates the true (unknown) distribution $U$ 
 - We estimate the variation of $\bar{x}$ around the true mean $1/\lambda$ using the variation of $\bar{x}^*$ in bootstrapped samples
@@ -155,7 +130,6 @@ score_ci <- function(N, rate, alpha = 0.05) {
 
 # Bootstrap Confidence Interval
 ```{r}
->>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 bootstrap_ci <- function(N, rate, alpha = 0.05){
   # Function to calculate bootstrap CI
   x <- rexp(N, rate = rate)
@@ -175,16 +149,10 @@ bootstrap_ci <- function(N, rate, alpha = 0.05){
   return(c(ci[2], ci[1]))
 }
 ```
-<<<<<<< HEAD
-
 # Coverage probabilities
 
 ```{r, echo = FALSE, message = FALSE}
-=======
 # Coverage probabilities
-
-```{r, echo = FALSE, message = FALSE, cache = TRUE}
->>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 library(dplyr)
 # Other functions
 coverage_probability <- function(N, rate, ci_fun, alpha = 0.05, B = 1000){
@@ -222,8 +190,8 @@ ns <- seq(1, 500)
 # Caution: bootstrap takes for-ev-er
 # bootstrap_cov <- mclapply(ns, coverage_probability, rate = lambda, ci_fun = "bootstrap_ci") %>% unlist()
 # gamma_cov <- mclapply(ns, coverage_probability, rate = lambda, ci_fun = "gamma_ci") %>% unlist()
-# wald_cov <- mclapply(ns, coverage_probability, rate = lambda, ci_fun = "wald_ci") %>% unlist()
-# score_cov <- mclapply(ns, coverage_probability, rate = lambda, ci_fun = "score_ci") %>% unlist()
+wald_cov <- mclapply(ns, coverage_probability, rate = lambda, ci_fun = "wald_ci") %>% unlist()
+score_cov <- mclapply(ns, coverage_probability, rate = lambda, ci_fun = "score_ci") %>% unlist()
 
 #coverage_df <- data.frame(n = ns, bs = bootstrap_cov, gamma = gamma_cov, wald = wald_cov, score = score_cov)
 #write_csv(coverage_df, "./data/coverage_probabilities.csv")
@@ -240,7 +208,6 @@ ggplot(coverage_df, aes(x = n, y = bs, color = "Bootstrap")) +
   scale_x_continuous(name = "N")
 ```
 
-<<<<<<< HEAD
 # Plot CI Widths
 
 ```{r}
@@ -274,7 +241,7 @@ gamma_ci_width <- function(N, rate, alpha = 0.05){
   return(diff)
 }
 
-score_ci2_width <- function(N, rate, alpha = 0.05) {
+score_ci_width <- function(N, rate, alpha = 0.05) {
   x <- rexp(N, rate = rate)
   xbar <- mean(x)
   ci <- (1/rate)*(1 + c(-1, 1) * qnorm(1 - alpha / 2) / sqrt(N))
@@ -299,7 +266,7 @@ bootstrap_ci_width <- function(N, rate, alpha = 0.05){
 rate <- seq(0.01, 0.5, 0.01)
 wald_width <- sapply(rate, FUN = wald_ci_width, N = 10)
 gamma_width <- sapply(rate, FUN = gamma_ci_width, N = 10)
-score_width <- sapply(rate, FUN = score_ci2_width, N = 10)
+score_width <- sapply(rate, FUN = score_ci_width, N = 10)
 bootstrap_width <- sapply(rate, FUN = bootstrap_ci_width, N = 10)
 dat <- data.frame(lambda = rate, 
                   wald = wald_width,
@@ -329,8 +296,6 @@ ggplot(data = dat, aes(x = lambda)) +
 ## add other n's
 ```
 
-=======
->>>>>>> 1941ca2eebfb6e98fa248172c11c91bcd641a0fb
 # Summary of Findings and Recommendations
 
 ```{r cars, echo = TRUE}
