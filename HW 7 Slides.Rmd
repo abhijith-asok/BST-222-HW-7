@@ -2,6 +2,8 @@
 title: "Exponential Distribution"
 author: "Abhijith Asok, Chris Hilger, Liam Loscalzo, Katherine Wang"
 output: beamer_presentation
+header-includes:
+   - \usepackage{makecell}
 theme: "Boadilla"
 ##colortheme: "structure"
 ---
@@ -23,20 +25,302 @@ We compared the following point estimators:
 
 ##add criteria for comparing estimators!
 
-# Maximum Likelihood Estimator
-```{r}
-##code here
+#Point Estimation Selection
 
+We compared the point estimators listed below, by looking at plots of Mean Squared Error and attributes like Bias, Asymptotic Unbiasedness and Consistency. 
+
+The first three estimators were determined before looking at the MSE plot. Obviously, the MLE and Unbaised correction of the MLE would be decent estimates, we also considered the Method of Moments estimator. However, the first moment, $E[X] = \frac{n}{\sum{x}_i}$ is the same as the MLE. Therefore, we looked at the second moment instead.  $E[X^2] = 2 * \bar{x}^2$
+
+The last two estimators were developed in an attempt to achive a lower MSE for a given range of $\lambda$, and $n$, $4 <\lambda < 6$ and $n = 10, 25$ respectively.
+
+#The chosen estimators
+
+\begin{center}
+\begin{tabular}{ ||p{2cm}|p{6cm}|p{1cm}||  }
+ \hline
+ \multicolumn{3}{|c|}{Estimator list} \\
+ \hline
+ Symbol & Estimator & Value \\
+ \hline
+ $\hat{\lambda}_0$ & Maximum Likelihood Estimator & $\frac{n}{\sum{x}_i}$\\
+ \hline
+ $\hat{\lambda}_1$ & Unbiased correction for the MLE & $\frac{n-1}{\sum{x}_i}$\\
+ \hline
+ $\hat{\lambda}_2$ & Second Method of Moment Estimator & $2 \bar{x}^2$\\
+ \hline
+ $\hat{\lambda}_3$ & Hard estimate, centered around 5 & $5$\\
+ \hline
+ $\hat{\lambda}_4$ & Similar to the MLE, without $n$ in numerator  & $\frac{1}{\sum{x}_i}$\\
+ \hline
+\end{tabular}
+\end{center}
+
+#Maximum Likelihood Estimator : $\hat{\lambda}_0$ $\frac{n}{\sum{x}_i}$
+
+Given how we parameterized the exponential distribution, we cannot apply the $E$ to a fraction since $\sum{x}_i$ is in the denominator. However, we recognize that $\sum{x}_i$ for an exponential is a gamma function. To make things easier, 
+
+## Calculating the Expectation
+
+Let $y = \sum{x}_i$ and $E[ \hat{\lambda}_0 ] = E\left[\frac{n}{\sum{x}_i}\right] = E[\frac{n}{y}]$
+
+So:
+
+$$
+E\left[\frac{n}{y}\right] = \int_{0}^{\infty}\frac{1}{(n-1)!\lambda^n} x^{(n-1)}e^{\left(\frac{-x}{\lambda}\right)}dy
+$$
+
+Computing this integral yields:  
+
+$$
+E[\hat{\lambda}_0] = \lambda \left(\frac{n}{n-1}\right)
+$$
+
+# Maximum Likelihood Estimator : $\hat{\lambda}_0$ $\frac{n}{\sum{x}_i}$
+
+## Calculating the Variance
+
+We need to calculate $Var[\hat{\lambda}_0]$  
+
+
+Rather than use the gamma function again, we will use the expected information $I = -l''({\lambda}_0)$
+
+$$
+I = - E[l''({\lambda}_0)] = - E\left[- \frac{\lambda^2}{n}\right]
+$$
+
+and we know: $Var = \frac{1}{I}$
+
+Therefore:
+
+$$
+Var[\hat{\lambda}_0] = \frac{\lambda^2}{n}
+$$
+
+# Maximum Likelihood Estimator : $\hat{\lambda}_0$ $\frac{n}{\sum{x}_i}$
+
+## Calculating the bias:
+
+$$
+Bias = E[\hat{\lambda}_0 - \lambda]
+$$
+
+Which is 
+
+$$
+\lambda \left(\frac{n}{n-1}\right) - \lambda
+$$
+
+## Calculating the Mean Squared Error:
+
+$$
+MSE = Bias^2 + Var =  (E[{\lambda}_0 - \lambda])^2 + Var([\hat{\lambda}_0])
+$$
+
+$$
+MSE = \left(\lambda\frac{n}{n-1} - \lambda\right)^2 + \frac{\lambda^2}{n}
+$$
+
+# Classifying the Estimator
+
+Unbiased: No, since the $E[\hat{\lambda}_0] \neq \lambda$  
+
+
+Asymptotically Unbiased: Yes, since the $\lim_{n\to\infty} \lambda \left(\frac{n}{n-1}\right)$ equals $\lambda$  
+
+
+Consistent: Yes, since it is Asymptotically Unbiased and $\lim_{n\to\infty} \frac{\lambda^2}{n}$ equals $0$
+
+We calculate values for each of the estimators to construct the table below:
+
+\begin{tabular}{ |p{2cm}||p{1cm}|p{1cm}|p{1cm}| p{1.5cm}|p{3cm}|}
+ \hline
+ \multicolumn{6}{|c|}{Values for Each Estimator} \\
+ \hline
+ Estimator&Value& $E[\lambda]$&$Var[\lambda]$& $Bias[\lambda]$&$MSE[\lambda]$\\ [7pt]
+ \hline
+ $\hat{\lambda}_0$& $\frac{n}{\sum{x}_i}$  & $\lambda\frac{n}{n-1}$& $\frac{\lambda^2}{n}$   & $\lambda\frac{n}{n-1}-\lambda$  & $(\lambda\frac{n}{n-1} - \lambda)^2 + \frac{\lambda^2}{n}$\\[7pt]
+ \hline
+ 
+ $\hat{\lambda}_1$&  $\frac{n-1}{\sum{x}_i}$ & $\lambda$  & $\frac{\lambda^2}{n}\frac{n-1}{n}^2$  & $0$& $\frac{\lambda^2}{n}\frac{n-1}{n}^2$\\[7pt]
+ \hline
+ 
+ 
+ $\hat{\lambda}_2$&   $2 \bar{x}^2$  & $\frac{2}{\lambda^2}$ & $\frac{16}{n\lambda^4}$ & $\frac{2}{\lambda^2}-\lambda$ & $({\frac{2}{\lambda^2}-\lambda)}^2 - \frac{16}{n\lambda^4}$ \\[7pt]
+ \hline
+ 
+ 
+ $\hat{\lambda}_3$& $5$  & $5$ & $0$ &  $5-\lambda$ & $(5-\lambda)^2$\\[7pt]
+ \hline
+ 
+ $\hat{\lambda}_4$&  $\frac{1}{\sum{x}_i}$ & $\frac{\lambda}{n-1}$  & $\frac{\lambda^2}{n^3}$ & $\frac{\lambda}{n-1} - \lambda$ & $ ({\frac{\lambda}{n-1} - \lambda})^2 +\frac{\lambda^2}{n^3}  $ \\[7pt]
+
+ \hline
+\end{tabular}
+
+# Table of Properties for All Estimators
+
+\begin{tabular}{ |p{2cm}||p{1cm}|p{2cm}|p{2cm}|p{3cm}|}
+ \hline
+ \multicolumn{5}{|c|}{Properties for Each Estimator} \\
+ \hline
+ Estimator& Value & Unbiased & \makecell{Asymp.\\ Unbaised} &Consistent\\
+ \hline
+ $\hat{\lambda}_0$& $\frac{n}{\sum{x}_i}$ & No    & Yes&   Yes\\[7pt]
+ \hline
+ $\hat{\lambda}_1$& $\frac{n-1}{\sum{x}_i}$ &   Yes  & Yes   &Yes\\[7pt]
+ \hline
+ $\hat{\lambda}_2$&  $2 \bar{x}^2$ & No & No &  No\\[7pt]
+ \hline
+ $\hat{\lambda}_3$& $5$ & \makecell{No, \\ unless $\hat{\lambda} = 5$} & No&  No\\[7pt]
+ \hline
+ $\hat{\lambda}_4$& $\frac{1}{\sum{x}_i}$ &   No  & Yes & Yes\\[7pt]
+
+ \hline
+\end{tabular}
+
+# Plotting the MSE
+
+- Now that we have the MSE calculations for all estimators, we can plot them for various $n$ over a range of $\lambda$ values. Specifically, we look at $n = 10$ and $n= 25$. 
+
+- Looking at the MSE for $\hat{\lambda}_1$, which is the unbiased version of the MLE, we find that the MSE is lowest compared to all other estimates, except for that of $\hat{\lambda}_3$ which equals $5$. 
+
+- As discussed earlier, the last two estimators $\hat{\lambda}_3$ and $\hat{\lambda}_4$ were developed in an attempt to achive a lower MSE for a given range of $\lambda$, specifically $4 <\lambda < 6$  at $n = 10 and 25$.
+
+- We find that $\hat{\lambda}_3$ achieves this goal nicely, but $\hat{\lambda}_4$ does not.
+
+- Plotting the estimators for n = 10 and n = 25, we see that the hard $\lambda = 5$ estimate would be less unseful because $\hat{\lambda}_1$, which is the unbiased version of the MLE, has an MSE which is much closer to it than at the $n =10$ level.
+
+# Plotting the MSE
+
+```{r, echo=FALSE}
+n<-10
+
+lam <-seq(0,10,0.01)
+mse0 <- (lam*n/(n-1))^2 + lam^2/n
+mse1 <- ((lam^2)/n)*((n-1)/n)^2
+mse2<- (2/(lam^2)-lam)^2 + 16/(n*lam^4)
+mse3 <- (5-lam)^2
+mse4 <- (lam/(n-1)- lam)^2 + lam^2/n^3
+
+plot(lam,mse0,ylab="MSE",xlab="Lambda",main="Compare MSE (n=10)",type="l",col="magenta",ylim=c(0,5))
+
+lines(lam,mse1,type="l",col="blue",lwd=2)
+lines(lam,mse2,type="l",col="red")
+lines(lam,mse3,type="l",col="orange")
+lines(lam,mse4,type="l",col="pink")
+
+legend(8, 5,legend=c("lam0", "lam1", "lam2", "lam3","lam4"),
+       col=c("magenta", "blue", "red", "orange" ,"pink"), lty=1, cex=0.8)
 ```
 
-# Unbiased correction for the MLE
-```{r}
-##code here
+# Plotting the MSE
+
+```{r,echo=FALSE}
+n<-25
+
+lam <-seq(0,10,0.01)
+mse0 <- (lam*n/(n-1))^2 + lam^2/n
+mse1 <- ((lam^2)/n)*((n-1)/n)^2
+mse2<- (2/(lam^2)-lam)^2 + 16/(n*lam^4)
+mse3 <- (5-lam)^2
+mse4 <- (lam/(n-1)- lam)^2 + lam^2/n^3
+
+plot(lam,mse0,ylab="MSE",xlab="Lambda",main="Compare MSE (n=25)",type="l",col="magenta",ylim=c(0,5))
+
+lines(lam,mse1,type="l",col="blue",lwd=2)
+lines(lam,mse2,type="l",col="red")
+lines(lam,mse3,type="l",col="orange")
+lines(lam,mse4,type="l",col="pink")
+
+legend(8, 5,legend=c("lam0", "lam1", "lam2", "lam3","lam4"),
+       col=c("magenta", "blue", "red", "orange" ,"pink"), lty=1, cex=0.8)
 ```
 
-# Second Method of Moment Estimator
-```{r}
-##code here
+#For low sample sizes, MoM estimates decrease and then increase with increasing degree 
+
+```{r, echo=FALSE}
+library(gridExtra)
+library(tidyverse)
+
+momest_exp <- function(v,k){
+  return((factorial(k)/(sum(v^k)/length(v)))^(1/k))
+}
+
+k <- 10
+moment_number <- seq(1,k,by=1)
+sample_size <- c(10,50,100)
+par(mfrow = c(2,3))
+g <- list()
+c <- 1
+#plotlabel <- data.frame(text = c("MLE","MLE","MLE","MLE","MLE","Unbiased Correction for MLE", 
+#                                 "Unbiased Correction for MLE","Unbiased Correction for MLE",
+#                                 "Unbiased Correction for MLE","Unbiased Correction for MLE"), 
+#                        x = c(10,10,10,10,10,8,5,8,8,8), 
+#                        y = c(0.08,0.0475,0.048,0.05,0.0503,0.0775,0.047,0.048,0.0495,0.05))
+for(i in sample_size){
+  set.seed(123)
+  exp_sample <- rexp(i, rate = 0.05)
+  moment_estimations <- data.frame(degree = 1:k, moments = matrix(unlist(lapply(moment_number,momest_exp,v=exp_sample))))
+  g[[c]] <- ggplot(data = moment_estimations, aes(x=degree,y=moments)) + 
+    geom_point(col = "darkblue") + 
+    geom_line(col = "blue") +
+    ggtitle(paste0("sample size = ",i)) + 
+    geom_hline(yintercept = 1/mean(exp_sample), lty = 2, col="darkred") +
+    geom_hline(yintercept = (length(exp_sample) - 1)/sum(exp_sample), lty = 2, col="darkgreen") +
+    #             geom_text(data=plotlabel[c,], aes(x,y,label=text), size = 3, col="darkred") +
+    #              geom_text(data=plotlabel[c + 5,], aes(x,y,label=text), size = 3, col="darkgreen") +
+    scale_colour_manual(name = 'the colour', values =c('black'='black','red'='red'), labels = c('c2','c1'))
+  theme_bw()
+  c <- c + 1
+}
+
+
+grid.arrange(g[[1]], g[[2]], g[[3]], 
+             top = "Moment Estimations V/S Moment degree (Actual rate = 0.05) : Red dashed lines are MLE; Green dashed lines are unbiased MLE")
+```
+
+# For a range of sample sizes, the first 10 MoM estimators, although slightly irregular, follow similar patterns
+
+```{r, echo=FALSE}
+k <- 10
+moment_number <- seq(1,k,by=1)
+cols <- c(paste0("k",1:k))
+sample_size <- seq(1000,100000,by=1000)
+moment_estimations <- data.frame(matrix(0, nrow = length(sample_size), ncol = k + 1))
+moment_estimations[,1] <- sample_size
+colnames(moment_estimations) <- c("n",cols)
+library(dplyr)
+c <- 1
+for (i in sample_size) {
+  set.seed(123)
+  exp_sample <- rexp(i, rate = 0.05)
+  for (j in moment_number) {
+    moment_estimations[c,j+1] <- momest_exp(exp_sample,j)
+  }
+  c <- c + 1
+}
+
+plotlabel <- data.frame(text = c("1","2","3","4","5","6","7","8","9","10"), 
+                        x = c(rep(3,10)), 
+                        y = c(0.0485,0.049,0.05,0.051,0.052,0.053,0.0545,0.056,0.0575,0.0595))
+
+moment_estimations %>% ggplot(aes(x = n)) + 
+  geom_line(aes(y=k1),col="violet") + 
+  geom_line(aes(y=k2),col="blue") +
+  geom_line(aes(y=k3),col="green") + 
+  geom_line(aes(y=k4),col="yellow") + 
+  geom_line(aes(y=k5),col="orange") + 
+  geom_line(aes(y=k6),col="red") + 
+  geom_line(aes(y=k7),col="cyan") + 
+  geom_line(aes(y=k8),col="magenta") +
+  geom_line(aes(y=k9),col="black") + 
+  geom_line(aes(y=k10),col="grey50") + 
+  xlab("Sample size") + 
+  ylab("Estimator value") + 
+  ggtitle("Variation of first 10 moment estimators with sample size(Actual rate = 0.05)") + 
+  theme_bw() + 
+  geom_text(data=plotlabel, aes(x,y,label=text), size = 3, col="darkred")
+
 ```
 
 # Confidence Intervals: Methods
@@ -209,19 +493,7 @@ ggplot(coverage_df, aes(x = n, y = bs, color = "Bootstrap")) +
 
 # Plot CI Widths
 
-```{r}
-# need to split
-#wald_ci <- function(N, rate, alpha = 0.05){
- # x <- rexp(N, rate = rate)
-  #x_bar <- mean(x)
-  #se <- sd(x)/sqrt(N)
-  #ci <- x_bar + c(-1, 1)*qnorm(1 - (alpha / 2))*se
-  #return(ci)
-#}
-#ggplot() + 
-  #stat_function(aes(x = 0:1), fun = wald_ci, args = list(N=10, rate=x))
-
-# width
+```{r, echo=FALSE}
 set.seed(123)
 wald_ci_width <- function (N, rate, alpha = 0.05){
   x <- rexp(N, rate = rate)
@@ -286,35 +558,42 @@ dat <- data.frame(lambda = rate,
                   score40 = score_width40,
                   bootstrap40 = bootstrap_width40
                   )
+
 dat <- abs(dat)
+
+text <- c("Wald", "Gamma", "Score", "Bootstrap","Wald", "Gamma", "Score", "Bootstrap")
+x <- c(0.05, 0.04, 0.04, 0.1, 0.04, 0.01, 0.05, 0.04)
+y <- c(75, 190, 125, 50, 60, 10, 40, 85)
+labels <- data.frame(text, x, y)
 
 p <- ggplot(data = dat, aes(x = lambda)) +
   xlab("Lambda") +
   ylab("CI Width") +
-  scale_color_manual("Test", 
-                     values=c("dodgerblue",
-                              "burlywood",
-                              "indianred1",
-                              "seagreen"),
-                     labels=c("Wald", 
-                              "Gamma",
-                              "Score",
-                              "Bootstrap")) +
   theme_bw()
-
+  
 p10 <- p +
-  geom_line(aes(y = wald10, color = "dodgerblue")) +
-  geom_line(aes(y = gamma10, color = "burlywood")) +
-  geom_line(aes(y = score10, color = "indianred1")) +
-  geom_line(aes(y = bootstrap10, color = "seagreen")) +
-  ggtitle("CI Widths when N=10")
+  geom_line(aes(y = wald10), col = "dodgerblue") +
+  geom_line(aes(y = gamma10), col = "burlywood") +
+  geom_line(aes(y = score10), col = "indianred1") +
+  geom_line(aes(y = bootstrap10), col = "seagreen") +
+  geom_text(data = labels[1, ], aes(x, y, label = text), col = "dodgerblue", size = 3) +
+  geom_text(data = labels[2, ], aes(x, y, label = text), col = "burlywood", size = 3) +
+  geom_text(data = labels[3, ], aes(x, y, label = text), col = "indianred1", size = 3) +
+  geom_text(data = labels[4, ], aes(x, y, label = text), col = "seagreen", size = 3) +
+  ggtitle("CI Widths when N=10") +
+  theme(legend.position="none") 
 
 p40 <- p +
-  geom_line(aes(y = wald40, color = "dodgerblue")) +
-  geom_line(aes(y = gamma40, color = "burlywood")) +
-  geom_line(aes(y = score40, color = "indianred1")) +
-  geom_line(aes(y = bootstrap40, color = "seagreen")) +
-  ggtitle("CI Widths when N=40")
+  geom_line(aes(y = wald40), color = "dodgerblue") +
+  geom_line(aes(y = gamma40), color = "burlywood") +
+  geom_line(aes(y = score40), color = "indianred1") +
+  geom_line(aes(y = bootstrap40), color = "seagreen") +
+  geom_text(data = labels[5, ], aes(x, y, label = text), col = "dodgerblue", size = 3) +
+  geom_text(data = labels[6, ], aes(x, y, label = text), col = "burlywood", size = 3) +
+  geom_text(data = labels[7, ], aes(x, y, label = text), col = "indianred1", size = 3) +
+  geom_text(data = labels[8, ], aes(x, y, label = text), col = "seagreen", size = 3) +
+  ggtitle("CI Widths when N=40") +
+  theme(legend.position="none")
 
 grid.arrange(p10, p40)
 
