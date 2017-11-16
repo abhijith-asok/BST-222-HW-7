@@ -4,7 +4,7 @@ author: "Abhijith Asok, Chris Hilger, Liam Loscalzo, Katherine Wang"
 output: beamer_presentation
 header-includes:
    - \usepackage{makecell}
-theme: "Boadilla"
+theme: "Boadilla" 
 ##colortheme: "structure"
 ---
 
