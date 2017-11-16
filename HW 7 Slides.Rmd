@@ -1,5 +1,6 @@
 ---
-title: "Exponential Distribution"
+title: "The Exponential Distribution"
+subtitle: "Estimators and Confidence Intervals"
 author: "Abhijith Asok, Chris Hilger, Liam Loscalzo, Katherine Wang"
 output: beamer_presentation
 header-includes:
@@ -15,25 +16,20 @@ library(gridExtra)
 set.seed(123)
 ```
 
-# Point Estimation: Methods
+# Point estimator selection and comparison
 
-We compared the following point estimators:
+We compared the point estimators listed on the following slide by looking at plots of mean squared error (MSE) and estimator properties like consistency, bias, and asymptotic bias.
 
-- Maximum Likelihood Estimator
-- Unbiased correction for the MLE
-- Second Method of Moment Estimator
+The first three estimators were chosen before looking at the MSE plot. We know that the MLE and unbaised correction to the MLE have some desirable characteristics. We also chose to investigate a method of moments estimator. Since the first moment $E[X] = \frac{n}{\sum{x}_i}$ is the same as the MLE, we looked at the second moment instead:  $E[X^2] = 2 * \bar{x}^2$
 
-##add criteria for comparing estimators!
+The last two estimators were developed in an attempt to achieve a lower MSE for different values of $\lambda$ and $n$ ($4 <\lambda < 6$ and $n = 10, 25$, respectively)
 
-#Point Estimation Selection
+## Exponential parameterization
+$$
+f(x, \lambda) = \lambda e^{-\lambda x}
+$$
 
-We compared the point estimators listed below, by looking at plots of Mean Squared Error and attributes like Bias, Asymptotic Unbiasedness and Consistency. 
-
-The first three estimators were determined before looking at the MSE plot. Obviously, the MLE and Unbaised correction of the MLE would be decent estimates, we also considered the Method of Moments estimator. However, the first moment, $E[X] = \frac{n}{\sum{x}_i}$ is the same as the MLE. Therefore, we looked at the second moment instead.  $E[X^2] = 2 * \bar{x}^2$
-
-The last two estimators were developed in an attempt to achive a lower MSE for a given range of $\lambda$, and $n$, $4 <\lambda < 6$ and $n = 10, 25$ respectively.
-
-#The chosen estimators
+# The chosen estimators
 
 \begin{center}
 \begin{tabular}{ ||p{2cm}|p{6cm}|p{1cm}||  }
@@ -55,11 +51,11 @@ The last two estimators were developed in an attempt to achive a lower MSE for a
 \end{tabular}
 \end{center}
 
-#Maximum Likelihood Estimator : $\hat{\lambda}_0$ $\frac{n}{\sum{x}_i}$
+# Maximum likelihood estimator: $\hat{\lambda}_0$ 
 
-Given how we parameterized the exponential distribution, we cannot apply the $E$ to a fraction since $\sum{x}_i$ is in the denominator. However, we recognize that $\sum{x}_i$ for an exponential is a gamma function. To make things easier, 
+Given how we parameterized the exponential distribution, we cannot easily take the expected value of $\hat{\lambda}_0$ since $\sum{x}_i$ is in the denominator. However, we recognize that $\sum{x}_i$ for an exponential variable is gamma-distributed. To make things easier, 
 
-## Calculating the Expectation
+## Expectation calculation
 
 Let $y = \sum{x}_i$ and $E[ \hat{\lambda}_0 ] = E\left[\frac{n}{\sum{x}_i}\right] = E[\frac{n}{y}]$
 
@@ -75,66 +71,53 @@ $$
 E[\hat{\lambda}_0] = \lambda \left(\frac{n}{n-1}\right)
 $$
 
-# Maximum Likelihood Estimator : $\hat{\lambda}_0$ $\frac{n}{\sum{x}_i}$
+# Maximum likelihood estimator: $\hat{\lambda}_0$ 
 
-## Calculating the Variance
+## Variance calculation
 
-We need to calculate $Var[\hat{\lambda}_0]$  
+We need to calculate $\text{Var}[\hat{\lambda}_0]$  
 
-
-Rather than use the gamma function again, we will use the expected information $I = -l''({\lambda}_0)$
+Here we will use the expected information $I = -l''({\lambda}_0)$
 
 $$
 I = - E[l''({\lambda}_0)] = - E\left[- \frac{\lambda^2}{n}\right]
 $$
 
-and we know: $Var = \frac{1}{I}$
+and we know $\text{Var}[\theta] = \frac{1}{I[\theta]}$
 
 Therefore:
 
 $$
-Var[\hat{\lambda}_0] = \frac{\lambda^2}{n}
+\text{Var}[\hat{\lambda}_0] = \frac{\lambda^2}{n}
 $$
 
-# Maximum Likelihood Estimator : $\hat{\lambda}_0$ $\frac{n}{\sum{x}_i}$
+# Maximum likelihood estimator: $\hat{\lambda}_0$ 
 
-## Calculating the bias:
+## Calculating the bias
 
-$$
-Bias = E[\hat{\lambda}_0 - \lambda]
-$$
+\begin{align*}
+Bias &= E[\hat{\lambda}_0 - \lambda]\\
+&= \lambda \left(\frac{n}{n-1}\right) - \lambda
+\end{align*}
 
-Which is 
+## Calculating the MSE
 
-$$
-\lambda \left(\frac{n}{n-1}\right) - \lambda
-$$
+\begin{align*}
+MSE &= \text{Bias}^2 + \text{Var} =  (E[{\lambda}_0 - \lambda])^2 + \text{Var}([\hat{\lambda}_0])\\
+&= \left(\lambda\frac{n}{n-1} - \lambda\right)^2 + \frac{\lambda^2}{n}
+\end{align*}
 
-## Calculating the Mean Squared Error:
+# Classifying the estimators
 
-$$
-MSE = Bias^2 + Var =  (E[{\lambda}_0 - \lambda])^2 + Var([\hat{\lambda}_0])
-$$
-
-$$
-MSE = \left(\lambda\frac{n}{n-1} - \lambda\right)^2 + \frac{\lambda^2}{n}
-$$
-
-# Classifying the Estimator
-
-Unbiased: No, since the $E[\hat{\lambda}_0] \neq \lambda$  
-
-
-Asymptotically Unbiased: Yes, since the $\lim_{n\to\infty} \lambda \left(\frac{n}{n-1}\right)$ equals $\lambda$  
-
-
-Consistent: Yes, since it is Asymptotically Unbiased and $\lim_{n\to\infty} \frac{\lambda^2}{n}$ equals $0$
+**Unbiased**: No, since the $E[\hat{\lambda}_0] \neq \lambda$  
+**Asymptotically unbiased**: Yes, since the $\lim_{n\to\infty} \lambda \left(\frac{n}{n-1}\right)$ equals $\lambda$  
+**Consistent**: Yes, since it is Asymptotically Unbiased and $\lim_{n\to\infty} \frac{\lambda^2}{n}$ equals $0$
 
 We calculate values for each of the estimators to construct the table below:
 
 \begin{tabular}{ |p{2cm}||p{1cm}|p{1cm}|p{1cm}| p{1.5cm}|p{3cm}|}
  \hline
- \multicolumn{6}{|c|}{Values for Each Estimator} \\
+ \multicolumn{6}{|c|}{Values for each estimator} \\
  \hline
  Estimator&Value& $E[\lambda]$&$Var[\lambda]$& $Bias[\lambda]$&$MSE[\lambda]$\\ [7pt]
  \hline
@@ -157,7 +140,7 @@ We calculate values for each of the estimators to construct the table below:
  \hline
 \end{tabular}
 
-# Table of Properties for All Estimators
+# Properties for all astimators
 
 \begin{tabular}{ |p{2cm}||p{1cm}|p{2cm}|p{2cm}|p{3cm}|}
  \hline
@@ -184,7 +167,7 @@ We calculate values for each of the estimators to construct the table below:
 
 - Looking at the MSE for $\hat{\lambda}_1$, which is the unbiased version of the MLE, we find that the MSE is lowest compared to all other estimates, except for that of $\hat{\lambda}_3$ which equals $5$. 
 
-- As discussed earlier, the last two estimators $\hat{\lambda}_3$ and $\hat{\lambda}_4$ were developed in an attempt to achive a lower MSE for a given range of $\lambda$, specifically $4 <\lambda < 6$  at $n = 10 and 25$.
+- As discussed earlier, the last two estimators $\hat{\lambda}_3$ and $\hat{\lambda}_4$ were developed in an attempt to achive a lower MSE for a given range of $\lambda$, specifically $4 <\lambda < 6$  at $n = 10, 25$.
 
 - We find that $\hat{\lambda}_3$ achieves this goal nicely, but $\hat{\lambda}_4$ does not.
 
@@ -236,7 +219,7 @@ legend(8, 5,legend=c("lam0", "lam1", "lam2", "lam3","lam4"),
        col=c("magenta", "blue", "red", "orange" ,"pink"), lty=1, cex=0.8)
 ```
 
-#For low sample sizes, MoM estimates decrease and then increase with increasing degree 
+# For small samples, MoM estimates decrease, then increase with increasing degree 
 
 ```{r, echo=FALSE}
 library(gridExtra)
@@ -279,7 +262,7 @@ grid.arrange(g[[1]], g[[2]], g[[3]],
              top = "Moment Estimations V/S Moment degree (Actual rate = 0.05) : Red dashed lines are MLE; Green dashed lines are unbiased MLE")
 ```
 
-# For a range of sample sizes, the first 10 MoM estimators, although slightly irregular, follow similar patterns
+# For a range of sample sizes, the first 10 MoM estimators follow similar patterns
 
 ```{r, echo=FALSE}
 k <- 10
@@ -323,20 +306,36 @@ moment_estimations %>% ggplot(aes(x = n)) +
 
 ```
 
-# Confidence Intervals: Methods
+# Confidence intervals: methods
 
 We compared the following confidence intervals:
 
-- Wald-based Confidence Interval
-- Gamma-based Confidence Interval
-- Score-based Confidence Interval
-- Bootstrap Confidence Interval
+- Wald-based confidence interval
+- Gamma-based confidence interval
+- Score-based confidence interval
+- Bootstrap confidence interval
 
-##add criteria for comparing CIs!!
+## Comparing confidence intervals
 
-# Wald Confidence Interval
+To compare confidence intervals, we are interested in understanding both
 
-```{r, echo = TRUE}
+- The coverage probability of each confidence interval at a given $\alpha$ and $\lambda$ value, evaluated at different sample sizes
+- How large the confidence interval is for a given $\alpha$ level, across different sample sizes and values of $\lambda$
+
+A good confidence interval should be as small as possible while providing a coverage probability corresponding to the chosen $\alpha$ level. We perform our assessments using simulated data.
+
+# Wald-based confidence interval
+
+The "standard" confidence interval based on the CLT, which says that as $n$ gets large, the Wald test statistic
+$$
+T = \frac{\lambda - \lambda_0}{\text{s.e.}(\lambda)} \stackrel{\text{app}}{\sim} N(0,1)
+$$
+We reject the null hypothesis when $|T| \ge z_{1 - \alpha/2}$. This can be inverted to obtain the $(1 - \alpha)\cdot100\%$ confidence interval
+$$
+\hat{\lambda} \pm z_{1 - \alpha/2} \cdot \text{s.e.}(\lambda) 
+$$
+
+```{r, echo = FALSE}
 wald_ci <- function(N, rate, alpha = 0.05){
   x <- rexp(N, rate = rate)
   x_bar <- mean(x)
@@ -346,7 +345,9 @@ wald_ci <- function(N, rate, alpha = 0.05){
 }
 ```
 
-# Gamma Confidence Interval
+# Gamma-based confidence interval
+
+## Relation of exponential distribution to gamma distribution
 
 If $X_1, X_2,...,X_n \stackrel{\text{iid}}{\sim} \text{Exponential}(\lambda)$, then
 
@@ -354,17 +355,21 @@ $$
 \sum_i^n x_i \sim \text{Gamma}(n, \lambda) \implies \lambda \bar{x} \sim \text{Gamma}(n, n)
 $$
 
+##
+
 Let $g_{y}$ be the $y$th percentile of this distribution. Then we can say:
 
 $$
-1 - \alpha = P(g_{\alpha/2} \le \lambda \bar{x} \le g_{1-\alpha/2}) = P(g_{\alpha/2}/\bar{x} \le \lambda \bar{x} \le g_{1-\alpha/2}/\bar{x})
+1 - \alpha = P(g_{\alpha/2} \le \lambda \bar{x} \le g_{1-\alpha/2}) = P(g_{\alpha/2}/\bar{x} \le \lambda \le g_{1-\alpha/2}/\bar{x})
 $$
 
-And therefore, a $(1 - \alpha)\%$ confidence interval for $\lambda$ is 
+Therefore, a $(1 - \alpha)\cdot100\%$ confidence interval for $\lambda$ is 
 
 $$
 (g_{\alpha / 2}/\bar{x},\, g_{1 - \alpha / 2}/\bar{x})
 $$
+
+Which can be trivially converted to a confidence interval for the mean $\mu = 1/\lambda$
 
 ```{r, echo = FALSE}
 gamma_ci <- function(N, rate, alpha = 0.05){
@@ -377,23 +382,23 @@ gamma_ci <- function(N, rate, alpha = 0.05){
 }
 ```
 
-# Score Confidence Interval
+# Score-based confidence interval
 
-For moderate to large sample sizes, the following score statistic is approximately normally distributed
-
-$$
-\frac{U(\lambda_o)}{\sqrt{Var[U(\lambda_o)]}} \sim N(0,1)
-$$
-
-So the $1-\alpha$ score confidence interval for the mean can be obtained by solving 
+For moderate to large sample sizes, the following score test statistic is approximately normally distributed
 
 $$
-\frac{\frac{n}{\lambda_o}-\sum{x_i}}{\sqrt{n/\lambda^2_o}} = \sqrt{n}(1-\lambda_o\overline{X}) \le z_{1-\alpha/2}
+\frac{U(\lambda_o)}{\sqrt{\text{Var}[U(\lambda_o)]}} \stackrel{\text{app}}{\sim} N(0,1)
 $$
-for $\overline{X}$, giving us a confidence interval of
+
+$(1-\alpha) \cdot 100\%$ confidence interval for the mean can be obtained by solving 
 
 $$
-\left(\frac{1}{\lambda_o}(1 - \frac{1}{\sqrt{n}}z_{1-\alpha/2}), \frac{1}{\lambda_o}(1 + \frac{1}{\sqrt{n}}z_{1-\alpha/2}) \right)
+\left|\frac{\frac{n}{\lambda_o}-\sum{x_i}}{\sqrt{n/\lambda^2_o}}\right| = \left|\sqrt{n}(1-\lambda_o\bar{x})\right| \ge z_{1-\alpha/2}
+$$
+for $\lambda_o$, giving us a confidence interval of
+
+$$
+\left(\frac{1}{\bar{x}}(1 - \frac{1}{\sqrt{n}}z_{1-\alpha/2}), \frac{1}{\bar{x}}(1 + \frac{1}{\sqrt{n}}z_{1-\alpha/2}) \right)
 $$
 ```{r, echo = FALSE}
 score_ci <- function(N, rate, alpha = 0.05) {
@@ -405,17 +410,16 @@ score_ci <- function(N, rate, alpha = 0.05) {
 }
 ```
 
-# Bootstrap Confidence Interval
+# Bootstrap confidence interval
 
 - Empirical method which does not require knowledge of underlying distribution for $X$
-- Based on resampling data (with replacement) many times to create an empirical distribution $U^*$ which approximates the true (unknown) distribution $U$ 
+- Based on resampling data (**with replacement**) many times to create an empirical distribution $U^*$ which approximates the true (unknown) distribution $U$ 
 - We estimate the variation of $\bar{x}$ around the true mean $1/\lambda$ using the variation of $\bar{x}^*$ in bootstrapped samples
 - As an empirical method, depends on the original data
-  - We expect that $\bar{x}^*$ will approximate $\bar{x}$ well, but no guarantee it will be a good estimate of $1/\lambda$
+  - We expect that $\bar{x}^*$ will approximate $\bar{x}$ well, but no guarantee it will be a good estimate of $\mu = 1/\lambda$
   - Not a problem when we use simulated data
 
-# Bootstrap Confidence Interval
-```{r}
+```{r, echo = FALSE}
 bootstrap_ci <- function(N, rate, alpha = 0.05){
   # Function to calculate bootstrap CI
   x <- rexp(N, rate = rate)
@@ -435,7 +439,8 @@ bootstrap_ci <- function(N, rate, alpha = 0.05){
   return(c(mean(ci), max(ci)))
 }
 ```
-# Coverage probabilities
+
+# Coverage probabilities: $\alpha = 0.05, \lambda = 1/12$
 
 ```{r, echo = FALSE, message = FALSE}
 # Coverage probabilities
@@ -481,17 +486,22 @@ coverage_df <- read_csv("./data/coverage_probabilities.csv")
 #coverage_df$score <- score_cov
 #coverage_df$wald <- wald_cov
 
-ggplot(coverage_df, aes(x = n, y = bs, color = "Bootstrap")) +
-  geom_line() +
-  geom_line(aes(x = n, y = gamma, color = "Gamma")) +
-  geom_line(aes(x = n, y = wald, color = "Wald")) +
-  geom_line(aes(x = n, y = score, color = "Score")) +
+s = 1/5
+ggplot(coverage_df[1:200, ], aes(x = n, y = bs, color = "Bootstrap")) +
+  geom_smooth(span = s, se = FALSE) +
+  geom_smooth(aes(x = n, y = gamma, color = "Gamma"), span = s, se = FALSE) +
+  geom_smooth(aes(x = n, y = wald, color = "Wald"), span = s, se = FALSE) +
+  geom_smooth(aes(x = n, y = score, color = "Score"), span = s, se = FALSE) +
+  geom_hline(yintercept = 0.95, linetype = 2) + 
   scale_y_continuous(name = "Coverage probability") +
   scale_x_continuous(name = "N") + 
-  theme_bw()
+  theme_bw() + 
+  theme(legend.position = c(0.9, 0.2), 
+        legend.title = element_blank(),
+        legend.background = element_blank())
 ```
 
-# Plot CI Widths
+# Plot CI lengths
 
 ```{r, echo=FALSE}
 set.seed(123)
@@ -601,8 +611,13 @@ grid.arrange(p10, p40)
 
 # Summary of Findings and Recommendations
 
-```{r cars, echo = TRUE}
-summary(cars)
-```
+## Estimators
+- this estimator rocks, that one sucks
 
+## Confidence intervals
+- Gamma-based confidence interval is exact and coverage probability aligns with chosen $\alpha$ for all $n$, but tends to be large for small $n$ and $\lambda$
+  - Only useful when the underlying distribution is known (not realistic)
+- Wald- and score-based intervals perform similarly, with score providing better coverage at small $n$
+- Bootstrap provides great flexibility, as does not require knowledge distribution underlying data
+  - "Slowest" to provide coverage corresponding to $\alpha$, but could possibly be improved using more bootstrap samples (restricted here for computational time)
 
