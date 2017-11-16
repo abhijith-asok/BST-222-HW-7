@@ -18,9 +18,11 @@ set.seed(123)
 
 # Point estimator selection and comparison
 
+
+
 We compared the point estimators listed on the following slide by looking at plots of mean squared error (MSE) and estimator properties like consistency, bias, and asymptotic bias.
 
-The first three estimators were chosen before looking at the MSE plot. We know that the MLE and unbaised correction to the MLE have some desirable characteristics. We also chose to investigate a method of moments estimator. Since the first moment $E[X] = \frac{n}{\sum{x}_i}$ is the same as the MLE, we looked at the second moment instead:  $E[X^2] = 2 * \bar{x}^2$
+The first three estimators were chosen before looking at the MSE plot. We know that the MLE and unbiased correction to the MLE have some desirable characteristics. We also chose to investigate a method of moments estimator. Since the first moment $E[X] = \frac{n}{\sum{x}_i}$ is the same as the MLE, we looked at the second moment instead:  $E[X^2] = 2 \bar{x}^2$
 
 The last two estimators were developed in an attempt to achieve a lower MSE for different values of $\lambda$ and $n$ ($4 <\lambda < 6$ and $n = 10, 25$, respectively)
 
@@ -29,89 +31,9 @@ $$
 f(x, \lambda) = \lambda e^{-\lambda x}
 $$
 
-# The chosen estimators
-
-\begin{center}
-\begin{tabular}{ ||p{2cm}|p{6cm}|p{1cm}||  }
- \hline
- \multicolumn{3}{|c|}{Estimator list} \\
- \hline
- Symbol & Estimator & Value \\
- \hline
- $\hat{\lambda}_0$ & Maximum Likelihood Estimator & $\frac{n}{\sum{x}_i}$\\
- \hline
- $\hat{\lambda}_1$ & Unbiased correction for the MLE & $\frac{n-1}{\sum{x}_i}$\\
- \hline
- $\hat{\lambda}_2$ & Second Method of Moment Estimator & $2 \bar{x}^2$\\
- \hline
- $\hat{\lambda}_3$ & Hard estimate, centered around 5 & $5$\\
- \hline
- $\hat{\lambda}_4$ & Similar to the MLE, without $n$ in numerator  & $\frac{1}{\sum{x}_i}$\\
- \hline
-\end{tabular}
-\end{center}
-
-# Maximum likelihood estimator: $\hat{\lambda}_0$ 
-
-Given how we parameterized the exponential distribution, we cannot easily take the expected value of $\hat{\lambda}_0$ since $\sum{x}_i$ is in the denominator. However, we recognize that $\sum{x}_i$ for an exponential variable is gamma-distributed. To make things easier, 
-
-## Expectation calculation
-
-Let $y = \sum{x}_i$ and $E[ \hat{\lambda}_0 ] = E\left[\frac{n}{\sum{x}_i}\right] = E[\frac{n}{y}]$
-
-So:
-
-$$
-E\left[\frac{n}{y}\right] = \int_{0}^{\infty}\frac{1}{(n-1)!\lambda^n} x^{(n-1)}e^{\left(\frac{-x}{\lambda}\right)}dy
-$$
-
-Computing this integral yields:  
-
-$$
-E[\hat{\lambda}_0] = \lambda \left(\frac{n}{n-1}\right)
-$$
-
-# Maximum likelihood estimator: $\hat{\lambda}_0$ 
-
-## Variance calculation
-
-We need to calculate $\text{Var}[\hat{\lambda}_0]$  
-
-Here we will use the expected information $I = -l''({\lambda}_0)$
-
-$$
-I = - E[l''({\lambda}_0)] = - E\left[- \frac{\lambda^2}{n}\right]
-$$
-
-and we know $\text{Var}[\theta] = \frac{1}{I[\theta]}$
-
-Therefore:
-
-$$
-\text{Var}[\hat{\lambda}_0] = \frac{\lambda^2}{n}
-$$
-
-# Maximum likelihood estimator: $\hat{\lambda}_0$ 
-
-## Calculating the bias
-
-\begin{align*}
-Bias &= E[\hat{\lambda}_0 - \lambda]\\
-&= \lambda \left(\frac{n}{n-1}\right) - \lambda
-\end{align*}
-
-## Calculating the MSE
-
-\begin{align*}
-MSE &= \text{Bias}^2 + \text{Var} =  (E[{\lambda}_0 - \lambda])^2 + \text{Var}([\hat{\lambda}_0])\\
-&= \left(\lambda\frac{n}{n-1} - \lambda\right)^2 + \frac{\lambda^2}{n}
-\end{align*}
 
 # Classifying the estimators
 
-**Unbiased**: No, since the $E[\hat{\lambda}_0] \neq \lambda$  
-**Asymptotically unbiased**: Yes, since the $\lim_{n\to\infty} \lambda \left(\frac{n}{n-1}\right)$ equals $\lambda$  
-**Consistent**: Yes, since it is Asymptotically Unbiased and $\lim_{n\to\infty} \frac{\lambda^2}{n}$ equals $0$
 
 We calculate values for each of the estimators to construct the table below:
 
@@ -140,26 +62,30 @@ We calculate values for each of the estimators to construct the table below:
  \hline
 \end{tabular}
 
-# Properties for all astimators
 
-\begin{tabular}{ |p{2cm}||p{1cm}|p{2cm}|p{2cm}|p{3cm}|}
- \hline
- \multicolumn{5}{|c|}{Properties for Each Estimator} \\
- \hline
- Estimator& Value & Unbiased & \makecell{Asymp.\\ Unbaised} &Consistent\\
- \hline
- $\hat{\lambda}_0$& $\frac{n}{\sum{x}_i}$ & No    & Yes&   Yes\\[7pt]
- \hline
- $\hat{\lambda}_1$& $\frac{n-1}{\sum{x}_i}$ &   Yes  & Yes   &Yes\\[7pt]
- \hline
- $\hat{\lambda}_2$&  $2 \bar{x}^2$ & No & No &  No\\[7pt]
- \hline
- $\hat{\lambda}_3$& $5$ & \makecell{No, \\ unless $\hat{\lambda} = 5$} & No&  No\\[7pt]
- \hline
- $\hat{\lambda}_4$& $\frac{1}{\sum{x}_i}$ &   No  & Yes & Yes\\[7pt]
 
- \hline
-\end{tabular}
+# Maximum likelihood estimator: $\hat{\lambda}_0$ 
+
+Given how we parameterized the exponential distribution, we cannot easily take the expected value of $\hat{\lambda}_0$ since $\sum{x}_i$ is in the denominator. However, we recognize that $\sum{x}_i$ for an exponential variable is gamma-distributed. Below we show how we use the gamma to calculate the expectation and use similar methods to compute the values shown in the slide above.
+
+## Expectation calculation
+
+Let $y = \sum{x}_i$ and $E[ \hat{\lambda}_0 ] = E\left[\frac{n}{\sum{x}_i}\right] = E[\frac{n}{y}]$
+
+So:
+
+$$
+E\left[\frac{n}{y}\right] = \int_{0}^{\infty}\frac{1}{(n-1)!\lambda^n} x^{(n-1)}e^{\left(\frac{-x}{\lambda}\right)}dy
+$$
+
+Computing this integral yields:  
+
+$$
+E[\hat{\lambda}_0] = \lambda \left(\frac{n}{n-1}\right)
+$$
+
+
+
 
 # Plotting the MSE
 
@@ -167,13 +93,15 @@ We calculate values for each of the estimators to construct the table below:
 
 - Looking at the MSE for $\hat{\lambda}_1$, which is the unbiased version of the MLE, we find that the MSE is lowest compared to all other estimates, except for that of $\hat{\lambda}_3$ which equals $5$. 
 
-- As discussed earlier, the last two estimators $\hat{\lambda}_3$ and $\hat{\lambda}_4$ were developed in an attempt to achive a lower MSE for a given range of $\lambda$, specifically $4 <\lambda < 6$  at $n = 10, 25$.
+- As discussed earlier, the last two estimators $\hat{\lambda}_3$ and $\hat{\lambda}_4$ were developed in an attempt to achieve a lower MSE for a given range of $\lambda$, specifically $4 <\lambda < 6$  at $n = 10, 25$.
 
 - We find that $\hat{\lambda}_3$ achieves this goal nicely, but $\hat{\lambda}_4$ does not.
 
-- Plotting the estimators for n = 10 and n = 25, we see that the hard $\lambda = 5$ estimate would be less unseful because $\hat{\lambda}_1$, which is the unbiased version of the MLE, has an MSE which is much closer to it than at the $n =10$ level.
+- Plotting the estimators for n = 10 and n = 25, we see that the hard $\lambda = 5$ estimate would be less useful because $\hat{\lambda}_1$, which is the unbiased version of the MLE, has an MSE which is much closer to it than at the $n =10$ level.
+
 
 # Plotting the MSE
+
 
 ```{r, echo=FALSE}
 n<-10
@@ -185,6 +113,7 @@ mse2<- (2/(lam^2)-lam)^2 + 16/(n*lam^4)
 mse3 <- (5-lam)^2
 mse4 <- (lam/(n-1)- lam)^2 + lam^2/n^3
 
+par(mfrow=c(1,2))
 plot(lam,mse0,ylab="MSE",xlab="Lambda",main="Compare MSE (n=10)",type="l",col="magenta",ylim=c(0,5))
 
 lines(lam,mse1,type="l",col="blue",lwd=2)
@@ -194,11 +123,8 @@ lines(lam,mse4,type="l",col="pink")
 
 legend(8, 5,legend=c("lam0", "lam1", "lam2", "lam3","lam4"),
        col=c("magenta", "blue", "red", "orange" ,"pink"), lty=1, cex=0.8)
-```
 
-# Plotting the MSE
 
-```{r,echo=FALSE}
 n<-25
 
 lam <-seq(0,10,0.01)
@@ -217,6 +143,7 @@ lines(lam,mse4,type="l",col="pink")
 
 legend(8, 5,legend=c("lam0", "lam1", "lam2", "lam3","lam4"),
        col=c("magenta", "blue", "red", "orange" ,"pink"), lty=1, cex=0.8)
+
 ```
 
 # For small samples, MoM estimates decrease, then increase with increasing degree 
@@ -306,7 +233,7 @@ moment_estimations %>% ggplot(aes(x = n)) +
 
 ```
 
-# Confidence intervals: methods
+# Confidence intervals: Methods
 
 We compared the following confidence intervals:
 
@@ -501,7 +428,7 @@ ggplot(coverage_df[1:200, ], aes(x = n, y = bs, color = "Bootstrap")) +
         legend.background = element_blank())
 ```
 
-# Plot CI lengths
+# Confidence Interval Widths: $\alpha = 0.05$
 
 ```{r, echo=FALSE}
 set.seed(123)
@@ -572,8 +499,8 @@ dat <- data.frame(lambda = rate,
 dat <- abs(dat)
 
 text <- c("Wald", "Gamma", "Score", "Bootstrap","Wald", "Gamma", "Score", "Bootstrap")
-x <- c(0.05, 0.04, 0.04, 0.1, 0.04, 0.01, 0.05, 0.04)
-y <- c(75, 190, 125, 50, 60, 10, 40, 85)
+x <- c(0.05, 0.04, 0.04, 0.1, 0.025, 0.04, 0.05, 0.1)
+y <- c(75, 190, 125, 50, 75, 60, 40, 20)
 labels <- data.frame(text, x, y)
 
 p <- ggplot(data = dat, aes(x = lambda)) +
@@ -606,13 +533,12 @@ p40 <- p +
   theme(legend.position="none")
 
 grid.arrange(p10, p40)
-
 ```
 
 # Summary of Findings and Recommendations
 
 ## Estimators
-- this estimator rocks, that one sucks
+- For small $\lambda$, all estimators seem to do well. For anything larger than $\lambda >2$ $\hat{\lambda}_1$, the unbiased MLE is the best.
 
 ## Confidence intervals
 - Gamma-based confidence interval is exact and coverage probability aligns with chosen $\alpha$ for all $n$, but tends to be large for small $n$ and $\lambda$
